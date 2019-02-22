@@ -211,7 +211,8 @@ function discount(vl){
     var data = "&hn="+$("input[name=hn]").val();
         data = data + "&dateday="+$("input[name=dateday]").val();
         data = data + "&discount="+$("#discount").val();
-   
+        data = data + "&officer="+$("#officer").val();
+
     $.ajax({
       type: "POST",
       url: "mysql_pos.php",
@@ -268,7 +269,23 @@ function discount(vl){
 		<fieldset style="width: 20cm;margin:0px auto;height:160px;">
 			<legend style="text-align: center;background-color:#66a3ff;color:#ffffff;border-top-left-radius: 10px;border-top-right-radius: 10px; ">.::POS::..</legend>
 			<table style="width:100%;">
-            <td>วันที่ <input type="text" name="dateday" style="width:100px;border:1px solid #e0e0e0;" value="<?=date("d/m/").(date("Y")+543)?>"></td>
+            <td>วันที่ <input type="text" name="dateday" style="width:100px;border:1px solid #e0e0e0;" value="<?=date("d/m/").(date("Y")+543)?>">
+               พนักงานขาย <select id="officer" style="width:180px;background-color:#ffe6ff;border-color:#ff66ff;">
+                <?
+                $stroff="SELECT * FROM account_login WHERE status = 'Y' ";
+                $result=mysql_query($stroff);
+                while($of = mysql_fetch_array($result)){
+                  if($_SESSION["sIdname"]==$of[user]){
+                    $sel = "selected";
+                  }else{
+                    $sel = '';
+                  }
+                  echo "<option $sel value='$of[user]'>$of[fullname]</option>";
+                }
+                ?>
+              </select>
+
+            </td>
             <td><div style="position:absolute;background-color:#000000;color:#00ff00;font-size: 35px;text-align: right;padding:5px;font-weight: bold;width:250px;height:70px;margin-left:-250px;margin-top:-20px;vertical-align: middle;" id="total_cash">0.00 ฿</div><input type='hidden' id='total_org'></td>
             <tr>
 				<td style="text-align: left;" colspan="3">OPD <input type="text" name="hn" style="width:100px;border:1px solid #e0e0e0;font-weight: bold; " onkeyup="if(event.which==13){ hn_detail(this.value)}"> &nbsp; ชื่อ : <input type="text" name="firstname" style="width:250px;border:0px solid #e0e0e0;border-bottom: 1px solid #c0c0c0;" placeholder="ลูกค้าเงินสด"> </td>

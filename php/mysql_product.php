@@ -9,9 +9,10 @@ if(empty($_POST["row_id"])){
 $strSQL = "INSERT INTO product SET "; 
 $strSQL .="detail = '".$_POST["detail"]."' ";
 $strSQL .=",price = '".$_POST["price"]."' ";
+$strSQL .=",time_do = '".$_POST["time_do"]."' ";
 $objQuery = mysql_query($strSQL);
 }else{
-	$sql_update = "UPDATE product SET detail='".$_POST["detail"]."' WHERE row_id = '".$_POST["row_id"]."'";
+	$sql_update = "UPDATE product SET detail='".$_POST["detail"]."',time_do = '".$_POST["time_do"]."' WHERE row_id = '".$_POST["row_id"]."'";
 	$result_update= mysql_query($sql_update) or die(mysql_error());	
 }
 
@@ -49,7 +50,7 @@ if($_POST["id"]){
 }
 
 
-}else if($_POST["submit"]=="del_product"){
+}else if($_POST["submit"]=="del_product_real"){
 
   $sql_del = "DELETE FROM product_real WHERE row_id = '".$_POST["row_id"]."' "; 
   $query = mysql_query($sql_del);

@@ -88,7 +88,7 @@ function num_comma($str){
 </html>
 <script type="text/javascript">
 function next_page(){
-	window.location='opd_search.php';
+	window.location='pos.php';
 }
-//setTimeout('next_page()',3000);
+setTimeout('next_page()',3000);
 </script>

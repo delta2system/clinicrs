@@ -198,7 +198,23 @@ function del_opd(){
 		<td colspan="7" style="color:#626262;text-align: center;">OPD Card</td>
 		<tr>
 		<td>OPD <input type="text" name="hn" style="width:120px;background-color:#cceeff;border-color:#66ccff; "></td><td style="height:80px;text-align: right;"> </td><td style="text-align: left;"></td><td></td>
-		<td  style="text-align: right;" colspan="3">ชื่อเซลล์ <input type="text" name="sale" style="width:150px;background-color:#ffe6ff;border-color:#ff66ff; "></td>
+		<td  style="text-align: right;" colspan="3">ชื่อเซลล์ 
+			<!-- <input type="text" name="sale" style="width:150px;background-color:#ffe6ff;border-color:#ff66ff; "> -->
+			<select name="sale" id="sale" style="width:160px;background-color:#ffe6ff;border-color:#ff66ff;">
+                <?
+                $stroff="SELECT * FROM account_login WHERE status = 'Y' ";
+                $result=mysql_query($stroff);
+                while($of = mysql_fetch_array($result)){
+                  if($_SESSION["sIdname"]==$of[user]){
+                    $sel = "selected";
+                  }else{
+                    $sel = '';
+                  }
+                  echo "<option $sel value='$of[user]'>$of[fullname]</option>";
+                }
+                ?>
+              </select>
+		</td>
 		</tdead>
 		<tbody >
 		<tr>

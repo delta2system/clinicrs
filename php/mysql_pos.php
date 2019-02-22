@@ -77,7 +77,7 @@ if($_POST["submit"]=="add_product"){
         $strSQL .=",pcs = '".$row["pcs"]."' ";
         $strSQL .=",price = '".$row["price"]."' ";
         $strSQL .=",datedo= '".$ds[2]."-".$ds[1]."-".$ds[0]."'";
-        $strSQL .=",officer = '".$_SESSION["sIdname"]."' ";
+        $strSQL .=",officer = '".$_POST["officer"]."' ";
         $strSQL .=",discount = '".$discount."'";
         $strSQL .=",status = '4' ";
         $objQuery = mysql_query($strSQL);

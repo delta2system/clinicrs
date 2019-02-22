@@ -86,18 +86,31 @@ function return_select_course(hn){
                     if(obj != '')
                     {
                           $.each(obj, function(key, val) {
-														
+									var detail_time = "";					
+									if(val["room_title"]){ detail_time = detail_time+ "ห้อง "+val["room_title"]; }
+									if(val["datedo"]!="0000-00-00"){ detail_time = detail_time+ "<span style='color:#0099ff;'> "+val["dateshow"]+" น.</span>"; }
+
 														var data = "<div style='border-bottom:1px solid #e0e0e0;padding:5px;text-align:right;'>";
 			 											  	data = data + "<div style='padding:5px;width:75%;float:left;text-align:left;'>"+val["detail"]+" </div>";
 																data = data + val["price"]+" ฿ <button class='btn btn-danger' onclick=\"del_pr('"+val["row_id"]+"')\">-</button>";
-																data = data + "<div> ผู้ปฏิบัติงาน &nbsp;&nbsp;<select style='width:150px;' name='"+val["row_id"]+"' onchange=\"worker(this)\">"+val["officer"]+"</select></div>";
+																data = data + "<div style='text-align:left;'> ผู้ปฏิบัติงาน &nbsp;&nbsp;<select style='width:200px;' name='"+val["row_id"]+"' onchange=\"worker(this)\">"+val["officer"]+"</select></div>";
+																data = data + "<div style='float:left;text-align:left;margin-top:10px;'><span id='room"+val["row_id"]+"'>"+detail_time+"</span><span id='bt_del_time' style='cursor:pointer;color:#ff0000;' onclick=\"del_time('"+val["row_id"]+"')\">[x]</span></div><div><button class='btn btn-info' onclick=\"calendar('"+val["row_id"]+"')\">เลือกห้อง/เวลา</button></div>";
+																
 			 											  	data = data + "</div>";
 																$("#product_select").append(data);
 																$("select[name="+val["row_id"]+"]").val(val["worker"]);
+
                           });
                     }
            }
     });
+}
+
+function calendar(rd){
+		$("#calendar_id").val(rd);
+		$("#calendar_popup").show();
+		window.open('../js/fullcalendar-1.9.4/demos/calendar_ordersheet.html' ,'iframe_calendar');
+		//window.open("../js/fullcalendar-1.9.4/demos/calendar_ordersheet.html?id="+rd,"iframe_target") ;
 }
 function add_pr(rd){
 	var hn = $("input[name=hn]").val();
@@ -125,12 +138,30 @@ function del_pr(rd){
       cache: false,
       success: function(result)
         {
-						
+						del_time(rd);
 						return_select_course(hn);
 						return_course(hn);
            }
     });	
 }
+
+function del_time(rd){
+	var hn = $("input[name=hn]").val();
+	$.ajax({
+      type: "POST",
+      url: "mysql_opdcard.php",
+      data: 'submit=del_time&row_id='+rd,
+      cache: false,
+      success: function(result)
+        {
+							//alert(result);
+						//$(".bt_del_time").hide();
+						return_select_course(hn);
+						return_course(hn);
+           }
+    })
+}
+
 
 function worker(str){
 	var na = str.name;
@@ -161,8 +192,33 @@ function print_order_sheet(){
     });	
 }
 
+function select_timeday(str,tim,roomid){
 
+	var data = "&id="+$("#calendar_id").val();
+	    data = data + "&datestart="+str;
+	    data = data + "&timestart="+tim;
+	    data = data + "&room="+roomid;
+	var id = $("#calendar_id").val();
+	    
+	$.ajax({
+      type: "POST",
+      url: "mysql_opdcard.php",
+      data: 'submit=settime_room'+data,
+      cache: false,
+      success: function(result){
 
+				$("#room"+id).html(result);
+				$("#bt_del_time").show();
+				//	alert(result);
+			
+			}
+    });	
+}
+
+function close_popup(){
+	$("#calendar_id").val('');
+	$("#calendar_popup").hide();
+}
 
 	 </script>
 	<style type="text/css">
@@ -221,6 +277,11 @@ function print_order_sheet(){
 
 </body>
 </html>
+<div id="calendar_popup" style="display:none;position: fixed;width:100%;height:100%;top:0px;left:0px;background-color: rgba(0,0,0,0.6);">
+	<input type="hidden" id="calendar_id">
+	<div style="position:fixed;font-size: 20px;left:50%;margin-left: 500px;margin-top: 10px;cursor: pointer;color:#ffffff;" onclick="close_popup()">&#10006;</div>
+	<iframe name="iframe_calendar" id="iframe_calendar" src="" style="position:fixed;width:900px;height: 730px;background-color: #ffffff;left:50%;margin-left:-400px;margin-top: 40px;border:0px solid #e2e2e2;padding:20px;border-radius: 5px;" ></iframe>
+</div>
 <script type="text/javascript">
 	$(function() {
     
@@ -235,6 +296,8 @@ function print_order_sheet(){
 });
 </script>
 <?
+
+
 if(isset($_GET["hn"])){
 	echo "<script>hn_detail('".$_GET["hn"]."');</script>";
 }

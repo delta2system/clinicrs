@@ -44,7 +44,7 @@ if(empty($_COOKIE["sIdname"])){
     $.ajax({
       type: "POST",
       url: "mysql_product.php",
-      data: 'submit=new_product&detail='+$("#detail").val()+'&row_id='+$("#row_id").val(),
+      data: 'submit=new_product&detail='+$("#detail").val()+'&row_id='+$("#row_id").val()+'&time_do='+$("#time_do").val(),
       cache: false,
       success: function(result)
         {
@@ -73,9 +73,10 @@ function del_p(){
     });	
 }
 
-function edit_p(rd,de){
+function edit_p(rd,de,tm){
 
 	$("#detail").val(de);
+	$("#time_do").val(tm);
 	$("#row_id").val(rd);
 	$("#edit_botton").show();
 	$("#new_botton").hide();
@@ -86,6 +87,7 @@ function edit_p(rd,de){
 function new_pupup(){
 	$("#detail").val('');
 	$("#row_id").val('');
+	$("#time_do").val('');
 	$("#edit_botton").hide();
 	$("#new_botton").show();
 	$("#new_product").show();
@@ -110,7 +112,7 @@ function return_product(vl){
                           $.each(obj, function(key, val) {                           
                             var tr = "<tr>";
                                 tr = tr + "<td style='border-bottom: 1px solid #e0e0e0;padding-left: 10px;'>"+val["detail"]+"</td>";
-			 													tr = tr + "<td style='text-align: center;'><button class='btn btn-warning' onclick=\"edit_p('"+val["row_id"]+"','"+val["detail"]+"')\">&#9998;</button>";
+			 													tr = tr + "<td style='text-align: center;'><button class='btn btn-warning' onclick=\"edit_p('"+val["row_id"]+"','"+val["detail"]+"','"+val["time_do"]+"')\">&#9998;</button>";
 																tr = tr + " <button class='btn btn-info' onclick=\"course_tools('"+val["detail"]+"','"+val["row_id"]+"')\">&#9881;</button>";
 																 tr = tr + "</td></tr>";
                             $('#tabledata > tbody:last').append(tr);
@@ -272,7 +274,8 @@ function deltools(rd){
 	<center>
 	<table style="width: 80%;">
 		<tr><td colspan="2" style="text-align: center;">เพิ่มสินค้า</td>
-		<tr><td>สินค้า</td><td><input type="text" id="detail"></td>
+		<tr><td style="text-align: right;">สินค้า :</td><td><input type="text" id="detail" style="width:150px;"></td>
+		<tr><td style="text-align: right;">เวลา :</td><td><input type="text" id="time_do" style="width:100px;text-align: center;"> นาที</td>
 		<!-- <tr><td>ราคา</td><td><input type="text" id="price"></td> -->
 		<tr><td colspan="2" style="text-align: center;">
 			<input type="hidden" id="row_id">

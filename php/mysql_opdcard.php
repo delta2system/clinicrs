@@ -170,7 +170,13 @@ if($_POST["data"]){
     $officer.="<option value='$row[row_id]'>$row[fullname]</option>";
   }
 
-    $strSQL = "SELECT opd_order.row_id,opd_order.hn,opd_order.pcs,opd_order.price,opd_order.worker,product.detail FROM opd_order INNER JOIN product ON opd_order.course_id = product.row_id WHERE opd_order.hn = '".$_POST["hn"]."' AND opd_order.status = '2' order by status ASC,course_id ASC,row_id ASC";
+  function room_rs($str){
+         $sql_r = "SELECT title from room_work WHERE id = '".$str."' ";
+         list($room) = Mysql_fetch_row(Mysql_Query($sql_r));
+         return $room;
+  }
+
+    $strSQL = "SELECT opd_order.row_id,opd_order.hn,opd_order.pcs,opd_order.price,opd_order.worker,opd_order.datedo,opd_order.timedo,opd_order.room,product.detail FROM opd_order INNER JOIN product ON opd_order.course_id = product.row_id WHERE opd_order.hn = '".$_POST["hn"]."' AND opd_order.status = '2' order by status ASC,course_id ASC,row_id ASC";
     $objQuery = mysql_query($strSQL) or die (mysql_error());
     $intNumField = mysql_num_fields($objQuery);
     $resultArray = array();
@@ -182,6 +188,8 @@ if($_POST["data"]){
         $arrCol[mysql_field_name($objQuery,$i)] = $obResult[$i];
       }
       $arrCol["officer"]=$officer;
+      $arrCol["room_title"]=room_rs($obResult["room"]);
+      $arrCol["dateshow"]= date_format((date_create($obResult["datedo"]." ".$obResult["timedo"])),"d/m/Y H:i");
       array_push($resultArray,$arrCol);
     }
     
@@ -195,21 +203,28 @@ if($_POST["data"]){
   }else if($_POST["submit"]=="del_course"){
     $sql_update = "UPDATE opd_order SET status='1',worker='' WHERE row_id = '".$_POST["row_id"]."' AND hn = '".$_POST["hn"]."' ";
     $result_update= mysql_query($sql_update) or die(mysql_error()); 
+  }else if($_POST["submit"]=="del_time"){
+   $sql_del = "DELETE FROM calendar WHERE id = '".$_POST["row_id"]."' "; 
+   $query = mysql_query($sql_del);
+
+   $sql_update = "UPDATE opd_order SET datedo='0000-00-00',timedo='00:00:00',room='' WHERE row_id = '".$_POST["row_id"]."' ";
+   $result_update= mysql_query($sql_update) or die(mysql_error()); 
+
   }else if($_POST["submit"]=="course_worker"){
     $sql_update = "UPDATE opd_order SET worker='".$_POST["worker"]."' WHERE row_id = '".$_POST["row_id"]."' ";
     $result_update= mysql_query($sql_update) or die(mysql_error()); 
   }else if($_POST["submit"]=="print_course_worker"){
     $no=date("YmdHis");
-    $datedo=date("Y-m-d");
-    $timedo=date("H:i:s");
+    //$datedo=date("Y-m-d");
+    //$timedo=date("H:i:s");
     $sql = "SELECT * from opd_order where hn='".$_POST["hn"]."' AND status ='2' ORDER By row_id  ASC";
     $result = mysql_query($sql);
     while ($row = mysql_fetch_array($result) ) {
 
       $strSQL = "UPDATE opd_order SET ";
       $strSQL .="no_ordersheet = '".$no."' ";
-      $strSQL .=",datedo = '".$datedo."' ";
-      $strSQL .=",timedo = '".$timedo."' ";
+      // $strSQL .=",datedo = '".$datedo."' ";
+      // $strSQL .=",timedo = '".$timedo."' ";
       $strSQL .=",officerdo = '".$_SESSION["sIdname"]."' ";
       $strSQL .=",status = '3' ";
       $strSQL .="WHERE row_id = '".$row[row_id]."' ";
@@ -242,6 +257,63 @@ if($_POST["data"]){
 
   $sql_del = "DELETE FROM opdcard WHERE hn = '".$_POST["hn"]."' "; 
   $query = mysql_query($sql_del);
+
+}else if($_POST["submit"]=="settime_room"){
+
+function random_color($str){
+
+switch($str)
+{
+case "1": $str = "#ff6f69"; break;
+case "2": $str = "#622569"; break;
+case "3": $str = "#c83349"; break;
+case "4": $str = "#A4C639"; break;
+case "5": $str = "#4285F4"; break;
+case "6": $str = "#34A853"; break;
+case "7": $str = "#EA4335"; break;
+case "8": $str = "#55ACEE"; break;
+case "9": $str = "#292F33"; break;
+case "10": $str = "#66757F"; break;
+case "11": $str = "#7CBB00"; break;
+case "12": $str = " #7B0099"; break;
+}
+return $str;
+
+
+
+}
+
+      $sql = "SELECT product.time_do,product.detail,opd_order.hn,opd_order.worker from opd_order inner join product on opd_order.course_id=product.row_id WHERE opd_order.row_id = '".$_POST["id"]."' ";
+      list($time_do,$detail,$hn,$worker) = Mysql_fetch_row(Mysql_Query($sql));
+
+      $sql_r = "SELECT title from room_work WHERE id = '".$_POST["room"]."' ";
+      list($room) = Mysql_fetch_row(Mysql_Query($sql_r));
+
+      $sql_f = "SELECT fullname from account_login WHERE row_id = '".$worker."' ";
+      list($fullname) = Mysql_fetch_row(Mysql_Query($sql_f));
+
+      $title="OPD:".$hn." คอร์ส :".$detail." ห้อง : ".$room." ผู้ปฏิบัติงาน :".$fullname;
+
+     // $dx=explode("T", $_POST["datestart"]);
+
+      $tx=explode(":",$_POST["timestart"]);
+
+      $end=date("H:i:s", mktime($tx[0], ($tx[1]+$time_do), 0, date("m")+0  , date("d")+0, date("Y")+0));
+
+      $strSQL = "INSERT INTO calendar SET "; 
+      $strSQL .="id = '".$_POST["id"]."'";
+      $strSQL .=",resourceId = '".$_POST["room"]."'";
+      $strSQL .=",title = '".$title."'";
+      $strSQL .=",start = '".$_POST["datestart"]."T".$_POST["timestart"].":00-05:00'";
+      $strSQL .=",end = '".$_POST["datestart"]."T".$end."-05:00'";
+      $strSQL .=",color = '".random_color(rand(1,12))."'";
+      $objQuery = mysql_query($strSQL)or die(mysql_error());
+
+      
+        $sql_update = "UPDATE opd_order SET datedo='".$_POST["datestart"]."',timedo='".$_POST["timestart"].":00',room='".$_POST["room"]."' WHERE row_id = '".$_POST["id"]."' ";
+        $result_update= mysql_query($sql_update) or die(mysql_error());  
+
+echo "ห้อง ".$room." <span style='color:#0099ff;'>".date_format((date_create($_POST["datestart"]." ".$_POST["timestart"])),"d/m/Y H:i")." น.</span>";
 
 }
 ?>

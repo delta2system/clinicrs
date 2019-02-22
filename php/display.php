@@ -6,11 +6,12 @@
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <script src="main.js"></script>
+    <meta http-equiv="refresh" content="0;url=../js/fullcalendar-1.9.4/demos/calendar.html">
 </head>
 <body>
 <center>
 <img src="../images/logo.jpg" style="height:200px;">
+
 </center>
 </body>
 </html>

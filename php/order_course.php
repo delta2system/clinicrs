@@ -114,10 +114,11 @@ function del_pr(id){
     $.ajax({
       type: "POST",
       url: "mysql_product.php",
-      data: 'submit=del_product'+data,
+      data: 'submit=del_product_real'+data,
       cache: false,
       success: function(result)
         {
+          //alert(result);
   			return_real();
            }
     });
