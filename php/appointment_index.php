@@ -12,6 +12,10 @@
 	   <link href="../vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
 </head>
 <body>
-ออกใบนัด
+<table style="width:800px;margin:0px auto;">
+	<thead>
+		<td><img src="../images/logo.jpg" style="height:200px;"> </td>
+	</thead>
+</table>
 </body>
 </html>
