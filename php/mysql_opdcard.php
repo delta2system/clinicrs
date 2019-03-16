@@ -82,6 +82,11 @@ unlink("../images/img_opd/new_img.png");
     for($i=0;$i<$intNumField;$i++)
     {
       $arrCol[mysql_field_name($objQuery,$i)] = $obResult[$i];
+      if(mysql_field_name($objQuery,$i)=="img_profile"){
+        if(empty($obResult[$i])){
+          $arrCol[mysql_field_name($objQuery,$i)]=="noImage.png";
+        }
+      }
     }
     array_push($resultArray,$arrCol);
   }
