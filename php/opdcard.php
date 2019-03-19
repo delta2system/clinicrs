@@ -40,7 +40,7 @@ if(empty($_COOKIE["sIdname"])){
 	 	function save_opd() {
 
 	 		var data = "&hn="+$("input[name=hn]").val();
-	 			data = data + "&sale="+$("input[name=sale]").val();
+	 			data = data + "&sale="+$("select[name=sale]").val();
 	 			data = data + "&firstname="+$("input[name=firstname]").val();
 	 			data = data + "&lastname="+$("input[name=lastname]").val();
 	 			data = data + "&idcard="+$("input[name=idcard]").val();
@@ -266,7 +266,78 @@ function del_opd(){
 </table>
 
 </div>
+<?if(isset($_GET["hn"])){
 
+function course_detail($str){
+
+$sql = "SELECT detail from product where row_id = '$str'   ";
+list($course) = Mysql_fetch_row(Mysql_Query($sql));
+return $course ;
+}
+
+function worker($str){
+$sql = "SELECT fullname from account_login where row_id = '$str'   ";
+list($fullname) = Mysql_fetch_row(Mysql_Query($sql));
+return $fullname ;	
+}
+
+	?>
+<div style="width:850px;margin:0px auto;padding:10px 10px;background-color: #ffffff;border-radius: 5px;border:1px solid #c2c2c2;box-shadow: 5px 5px 5px rgba(0,0,0,0.1)">
+<table style="width:100%;">
+	<thead>
+		<td colspan="6" style="text-align: center;border:1px solid #f0f0f0;font-size: 20px;">
+			รายการที่ลูกค้ามีอยู่
+		</td>
+		<tr><td style="text-align: center;background-color: #f2f2f2;border:1px solid #f0f0f0;">คอร์ส</td>
+		<td style="text-align: center;background-color: #f2f2f2;border:1px solid #f0f0f0;">เลขที่บิล</td>
+		<td style="text-align: center;background-color: #f2f2f2;border:1px solid #f0f0f0;">ราคา</td>
+	</thead>
+<tbody>
+<?
+$sql_r = "SELECT * from opd_order where hn = '".$_GET["hn"]."' AND status = '1' ORDER By row_id  ASC";
+$result_r = mysql_query($sql_r);
+while ($data = mysql_fetch_array($result_r) ) {
+print "<tr style='border-bottom:1px solid #e2e2e2;'><td>".course_detail($data[course_id])."</td>"
+	  ."<td>$data[nobill_system]</td>"
+	  ."<td style='text-align: right;'>$data[price]&nbsp;&nbsp;</td>"
+	  ."</tr>";
+}
+	?>
+</tbody>
+</table>	
+
+
+<br><br><br>
+
+<table style="width:100%;">
+	<thead>
+		<td colspan="6" style="text-align: center;border:1px solid #f0f0f0;font-size: 20px;">
+			รายการที่ลูกค้าทำแล้ว
+		</td>
+		<tr><td style="text-align: center;background-color: #f2f2f2;border:1px solid #f0f0f0;">คอร์ส</td>
+		<td style="text-align: center;background-color: #f2f2f2;border:1px solid #f0f0f0;">เลขที่บิล</td>
+		<td style="text-align: center;background-color: #f2f2f2;border:1px solid #f0f0f0;">ราคา</td>
+		<td style="text-align: center;background-color: #f2f2f2;border:1px solid #f0f0f0;">วันที่ทำ</td>
+		<td style="text-align: center;background-color: #f2f2f2;border:1px solid #f0f0f0;">เวลา</td>
+		<td style="text-align: center;background-color: #f2f2f2;border:1px solid #f0f0f0;">ผู้ปฏิบัติงาน</td>
+	</thead>
+<tbody>
+<?
+$sql_r = "SELECT * from opd_order where hn = '".$_GET["hn"]."' AND status = '3' ORDER By row_id  ASC";
+$result_r = mysql_query($sql_r);
+while ($data = mysql_fetch_array($result_r) ) {
+print "<tr style='border-bottom:1px solid #e2e2e2;'><td>".course_detail($data[course_id])."</td>"
+	  ."<td>$data[nobill_system]</td>"
+	  ."<td style='text-align: right;'>$data[price]&nbsp;&nbsp;</td>"
+	  ."<td style='text-align: center;'>".date_format(date_create($data[datedo]),"d/m/Y")."</td>"
+	  ."<td style='text-align: center;'>$data[timedo]</td>"
+	  ."<td>".worker($data[worker])."</td></tr>";
+}
+	?>
+</tbody>
+</table>	
+</div>
+<?}?>
 </body>
 </html>
 <?

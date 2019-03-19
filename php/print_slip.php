@@ -18,8 +18,8 @@ include("../data/connect.inc");
 <body onload="window.print()">
 <div style="width:60mm;margin:0px auto;">
 <?
-		  $sql_head = "SELECT opdcard.firstname, opdcard.lastname, opd_order.hn  FROM opd_order INNER JOIN opdcard ON opd_order.hn=opdcard.hn  WHERE  opd_order.nobill = '".$_GET["nobill"]."'  limit 1 ";
-  		  list($firstname,$lastname,$hn) = Mysql_fetch_row(Mysql_Query($sql_head));
+		  $sql_head = "SELECT opdcard.firstname, opdcard.lastname, opd_order.hn , opd_order.nobill_system  FROM opd_order INNER JOIN opdcard ON opd_order.hn=opdcard.hn  WHERE  opd_order.nobill = '".$_GET["nobill"]."'  limit 1 ";
+  		  list($firstname,$lastname,$hn,$nobill_system) = Mysql_fetch_row(Mysql_Query($sql_head));
   		  echo mysql_error();
 ?>	
 
@@ -27,6 +27,7 @@ include("../data/connect.inc");
 	<td colspan="2">
 		<img src="../images/logo.jpg" style="width:58mm;">
 	</td>
+	<tr><td colspan="2">เลขที่บิล : <?=$nobill_system?></td>
 	<tr><td colspan="2">OPD : <?=$hn?></td>
 	<tr><td colspan="2" style="height:20px;border-bottom: 1px solid #c2c2c2">ชื่อลูกค้า : คุณ <?=$firstname." ".$lastname?></td>
 		

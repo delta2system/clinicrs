@@ -119,9 +119,16 @@ return $month;
                           $result = mysql_query($sql);
                           while ($row = mysql_fetch_array($result) ) {
                             $r++;
+                            //echo $row["img_profile"]."===>".$row["hn"]."<br>";
+                            if(!empty($row["img_profile"])){
+                                $img_profile=$row["img_profile"];
+                            }else{
+                                $img_profile="noimage.png";
+                            }
+
                               print "<tr ondblclick=\"window.location='opdcard.php?hn=$row[hn]'\">"
                                     ."<td>$r</td>"
-                                    ."<td><img src='../images/img_opd/$row[img_profile]' style='width:120px;'></td>"
+                                    ."<td><img src='../images/img_opd/$img_profile' style='width:120px;'></td>"
                                     ."<td>$row[hn]</td>"
                                     ."<td>$row[firstname] $row[lastname]</td>"
                                     ."<td>$row[nickname]</td>"

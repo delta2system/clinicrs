@@ -113,8 +113,12 @@ echo number_format(array_sum($total),2);
 
 }else if($_POST["submit"]=="save_opd_order"){
 
+if(!empty($_POST["nobill"])){
+$nobill_system=$_POST["nobill"];
+}else{
+$nobill_system=date("YmdHis");
+}
 $nobill=date("YmdHis");
-
 $sql = "SELECT * from product_real where hn = '".$_POST["hn"]."' AND status = '1'";
 $result = mysql_query($sql);
 while ($row = mysql_fetch_array($result) ) {
@@ -123,6 +127,7 @@ while ($row = mysql_fetch_array($result) ) {
 	$strSQL = "INSERT INTO opd_order SET "; 
 	$strSQL .="hn = '".$row["hn"]."' ";
 	$strSQL .=",nobill = '".$nobill."' ";
+  $strSQL .=",nobill_system = '".$nobill_system."' ";
 	$strSQL .=",course_id = '".$row["id"]."' ";
 	$strSQL .=",pcs = '1' ";
 	$strSQL .=",price = '".$row["price"]."' ";

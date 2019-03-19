@@ -220,6 +220,7 @@ function total_cal(id,pcs,value){
 function save_course(){
 
 	var data = "&hn="+$("input[name=hn]").val();
+      data = data + "&nobill="+$("input[name=nobill]").val();
 
     $.ajax({
       type: "POST",
@@ -277,7 +278,7 @@ function save_course(){
 		<fieldset style="width: 20cm;margin:0px auto;height:160px;">
 			<legend style="text-align: center;background-color:#cc66ff;color:#ffffff;border-top-left-radius: 10px;border-top-right-radius: 10px; ">.::OPD::..</legend>
 			<table style="width:100%;">
-				<td style="text-align: right;" colspan="3">OPD <input type="text" name="hn" style="width:100px;border:0px solid #e0e0e0;font-weight: bold; "></td>
+				<td style="text-align: right;" colspan="3"><div style="position: absolute;">เลขที่ <input type="text" name="nobill" style="width:100px;border:1px solid #e0e0e0;font-weight: bold; "></div>OPD <input type="text" name="hn" style="width:100px;border:0px solid #e0e0e0;font-weight: bold; "></td>
 				<tr>
 		<td style="text-align: left;" colspan="3">ชื่อ : <input type="text" name="firstname" style="width:80%;border:0px solid #e0e0e0;border-bottom: 1px solid #c0c0c0;"> กรุ๊ปเลือด : <input type="text" name="blood" style="width:40px;border:0px solid #e0e0e0;border-bottom: 1px solid #c0c0c0;"></td>
 		<tr>

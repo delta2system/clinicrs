@@ -1,8 +1,8 @@
 ﻿<?PHP
 $ServerName = "localhost";
-$DatabaseName = "tbl_clinic";
-$User = "root_clinic"; 
-$Password = "11501150";
+$DatabaseName = "clinic";
+$User = "root"; 
+$Password = "";
 
 $Conn = mysql_connect($ServerName,$User,$Password) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้ ");
 mysql_select_db($DatabaseName,$Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");

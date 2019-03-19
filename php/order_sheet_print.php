@@ -63,7 +63,7 @@ function room_work($str){
     }
 
 
-    $sql = "SELECT product.detail,product.time_do,opd_order.worker,opd_order.course_id,opd_order.timedo,opd_order.datedo,opd_order.room from opd_order inner join product on opd_order.course_id=product.row_id where opd_order.no_ordersheet = '".$_GET["no"]."'";
+    $sql = "SELECT product.detail,product.time_do,opd_order.worker,opd_order.course_id,opd_order.timedo,opd_order.price,opd_order.datedo,opd_order.room from opd_order inner join product on opd_order.course_id=product.row_id where opd_order.no_ordersheet = '".$_GET["no"]."'";
     $result = mysql_query($sql);
     while ($row = mysql_fetch_array($result) ) {
 
@@ -86,7 +86,7 @@ function room_work($str){
         <?
 
         print "<tr><td>คอร์ส : $row[detail] </td><td>$row[time_do] นาที</td>";
-        print "<tr><td >วันที่ ".$datedx." </td>";
+        print "<tr><td >วันที่ ".$datedx." </td><td>$row[price] ฿</td>";
         print "<tr><td >ห้อง ".room_work($row[room])." </td><td>เวลา ".substr($row[timedo],0,5)." น.</td>";
         print "<tr><td colspan='3' style='border-top:1px solid #a2a2a2;padding-left:15px;'>";
 

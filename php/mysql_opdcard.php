@@ -11,13 +11,32 @@ if(empty($_POST["hn"])){
   if($year!=(date("y")+43)){
   	$year=date("y")+43;
   	$no = "0";
-  }
   	$no++;
 
  	$sql_update = "UPDATE runno SET no='$no',year='$year' WHERE row_id='1' ";
 	$result_update= mysql_query($sql_update) or die(mysql_error());	
 
-	$hn=$year.str_pad($no,4,'0',STR_PAD_LEFT);
+	$hn=str_pad($no,4,'0',STR_PAD_LEFT);
+  }else{
+    $rx=1;
+    while ( $rx <= 9) {
+      $strSQL= "SELECT * FROM opdcard where hn = '".str_pad($no,4,'0',STR_PAD_LEFT)."'";
+      $result_t = mysql_query($strSQL);
+      $num = mysql_num_rows($result_t);
+      if(empty($num)){
+        $no=str_pad($no,4,'0',STR_PAD_LEFT);
+        $hn=str_pad($no,4,'0',STR_PAD_LEFT);
+        $rx=10;
+        $sql_update = "UPDATE runno SET no='$no',year='$year' WHERE row_id='1' ";
+        $result_update= mysql_query($sql_update) or die(mysql_error()); 
+      }else{
+        $no++;
+      }
+
+    }
+  }
+
+
 }else{
 	$hn=$_POST["hn"];
 }			
@@ -63,6 +82,7 @@ if(empty($_POST["hn"])){
 	 		}else{	
 	 		$strSQL .="WHERE row_id = '".$_POST["row_id"]."' ";
 	 		}
+      echo $strSQL;
 	 		$objQuery = mysql_query($strSQL);
 
 if($_POST["img_profile"]=="Y"){	 	
