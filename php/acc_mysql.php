@@ -10,6 +10,7 @@ $strSQL .="user = '".$_GET["user"]."' ";
 $strSQL .=",passwd = '".$_GET["pass"]."' ";
 $strSQL .=",fullname = '".$_GET["full"]."' ";
 $strSQL .=",position = '".$_GET["pos"]."' ";
+$strSQL .=",menutrue = '".$_GET["code_menu"]."' ";
 $strSQL .=",status = 'Y' ";
 $objQuery = mysql_query($strSQL);
 if($objQuery){
@@ -23,6 +24,7 @@ $strSQL .="user = '".$_GET["user"]."' ";
 $strSQL .=",passwd = '".$_GET["pass"]."' ";
 $strSQL .=",fullname = '".$_GET["full"]."' ";
 $strSQL .=",position = '".$_GET["pos"]."' ";
+$strSQL .=",menutrue = '".$_GET["code_menu"]."' ";
 $strSQL .=",status = 'Y' ";
 $strSQL .="WHERE row_id = '".$_GET["row_id"]."' ";
 $objQuery = mysql_query($strSQL);

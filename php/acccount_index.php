@@ -66,7 +66,7 @@ function save_acc(){
         td = td + "&pass=" + $("input[name=password]").val();
         td = td + "&pos=" + $("input[name=position]").val();
         td = td + "&full=" + $("input[name=fullname]").val();
-
+        td = td + "&code_menu=" + $('#code_menu_edit').val();
 if(nx==""){
    url = 'acc_mysql.php?submit=new_acc'+td;
 }else{
@@ -99,15 +99,30 @@ function del_acc(vx,dx){
  }
 }
 
-function edit_user(rd,ft,us,pa,po){
+function edit_user(rd,ft,us,pa,po,mc){
 
+$("input:checkbox").prop('checked', false);
 
 $("input[name=row_id]").val(rd);
 $("input[name=username]").val(us);
 $("input[name=password]").val(pa);
 $("input[name=position]").val(po);
 $("input[name=fullname]").val(ft);
-
+$('#code_menu_edit').val(mc); 
+        // var vx = mc;
+         var code_array = mc.split(',');
+        //alert(code_array[2]);
+        //alert(code_array.length);
+        r=1;
+        while(r<code_array.length){
+          //document.getElementById("ch"+code_array[r]).checked = true;
+          $("#ch"+code_array[r]).prop('checked', true);
+          r = r+1;
+        }
+       // alert(r);
+          //for(y=1;code_array.length;y++){
+          //document.getElementById("ch"+code_array[i]).checked = true;
+         //}
 
 $("#popup").show();
 }
@@ -120,8 +135,31 @@ function new_acc() {
     $("input[name=position]").val('');
     $("input[name=fullname]").val('');
     $('input[name=username]').focus();
+    $('#code_menu_edit').val('');
     $('#popup').toggle();
 }
+
+      function code_menuedit(str){
+      var vx = document.getElementById("code_menu_edit").value;
+      if(str.checked==true){
+        vl = vx + ","+str.value
+        //document.getElementById("code_menu").value = vl ;
+        var code_array = vl.split(',');
+        code_array.sort();
+        document.getElementById("code_menu_edit").value = code_array.toString();
+
+        }else{
+
+      var code_array = vx.split(',');
+      
+      var i = code_array.indexOf(str.value);
+      if(i != -1) {
+        code_array.splice(i, 1);
+        }
+        code_array.sort();
+        document.getElementById("code_menu_edit").value = code_array.toString();
+        }
+      }
 
     </script>
 </head>
@@ -156,7 +194,7 @@ function new_acc() {
                                              ."<td>$row[fullname]</td>"
                                              ."<td>$row[position]</td>"
                                              ."<td>".date_format( date_create($row[lastlogin]),"d-m-Y H:i:s")."</td>"
-                                             ."<td> <button class='btn btn-warning' onclick=\"edit_user('$row[row_id]','$row[fullname]','$row[user]','$row[passwd]','$row[position]')\"><i class='fa fa-pencil'></i></button>"
+                                             ."<td> <button class='btn btn-warning' onclick=\"edit_user('$row[row_id]','$row[fullname]','$row[user]','$row[passwd]','$row[position]','$row[menutrue]')\"><i class='fa fa-pencil'></i></button>"
                                              ." <button class='btn btn-danger' onclick=\"del_acc('$row[row_id]','$row[fullname]')\">X</button></td>"
                                              ."</tr>";
                                     }
@@ -182,7 +220,7 @@ function new_acc() {
 
 </body>
 <div id="popup" style="display:none;background-color: rgba(0,0,0,0.5);width:100%;height:100%;position: fixed;top:0px;left:0px;z-index: 5;">
-  <div class="modal-dialog" style="margin-top: 200px;">
+  <div class="modal-dialog" style="margin-top: 50px;">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="$('#popup').hide()">×</button>
@@ -198,6 +236,19 @@ function new_acc() {
         <label>ตำแหน่ง</label>
         <input class="form-control" type="text" name="position" placeholder="ตำแหน่ง">
         <input type="hidden" name='row_id'>
+        <label>เมนู</label>
+        <table>
+        <?
+        $sql = "SELECT * from menulst where status = 'Y' ORDER By menu_sort  ASC";
+        $result = mysql_query($sql);
+        while ($row = mysql_fetch_array($result) ) {
+          $r++;
+          if($r%6==0){echo "<tr>";}
+          echo "<td><input type='checkbox' id='ch".$row[row_id]."' value='$row[row_id]' onclick=\"code_menuedit(this)\"> $row[menu] &nbsp;&nbsp;</td>";
+        }
+        ?>
+      </table>
+      <input type="hidden" id="code_menu_edit"> 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#popup').hide()">ปิด</button>
