@@ -39,13 +39,14 @@ if(empty($_POST["hn"])){
 
 }else{
 	$hn=$_POST["hn"];
+
 }			
 
 	 		if($_POST["img_profile"]=="Y" && $_POST["hn"]==""){
  			if($_POST["img_profile"]=="Y"){
 	 			$img_profile=$hn.".png";
 	 		}else{
-	 			$img_profile="noImage.png";
+	 			$img_profile="noimage.png";
 	 		}
 	 		}else if($_POST["img_profile"]=="Y" && $_POST["hn"]!=""){
  			if($_POST["img_profile"]=="Y"){
@@ -53,7 +54,11 @@ if(empty($_POST["hn"])){
 	 		}
 	 		}
 
-			if($_POST["hn"]){
+      $resulte = mysql_query("SELECT hn FROM opdcard where hn='$hn'");
+      $checkhn = mysql_num_rows($resulte);
+
+
+			if($checkhn){
 			$strSQL = "UPDATE opdcard SET ";
 			}else{
 			$strSQL = "INSERT INTO opdcard SET "; 
@@ -77,19 +82,19 @@ if(empty($_POST["hn"])){
 	 		$strSQL .=",img_profile = '".$img_profile."'";
 	 		}
 	 		$strSQL .=",status = 'Y' ";
-	 		if(empty($_POST["hn"])){
+	 		if(empty($checkhn)){
 	 		$strSQL .=",regis_date = '".date("Y-m-d H:i:s")."'";	 		
 	 		}else{	
 	 		$strSQL .="WHERE row_id = '".$_POST["row_id"]."' ";
 	 		}
-      echo $strSQL;
+      //echo $strSQL;
 	 		$objQuery = mysql_query($strSQL);
 
 if($_POST["img_profile"]=="Y"){	 	
 copy("../images/img_opd/new_img.png","../images/img_opd/".$hn.".png");
 unlink("../images/img_opd/new_img.png");
 }
-
+echo $hn;
 }else if($_POST["submit"]=="return_hn"){
 
   $strSQL = "SELECT * FROM opdcard WHERE hn = '".$_POST["hn"]."' ";
@@ -104,7 +109,7 @@ unlink("../images/img_opd/new_img.png");
       $arrCol[mysql_field_name($objQuery,$i)] = $obResult[$i];
       if(mysql_field_name($objQuery,$i)=="img_profile"){
         if(empty($obResult[$i])){
-          $arrCol[mysql_field_name($objQuery,$i)]=="noImage.png";
+          $arrCol[mysql_field_name($objQuery,$i)]=="noimage.png";
         }
       }
     }
@@ -116,7 +121,7 @@ unlink("../images/img_opd/new_img.png");
   echo json_encode($resultArray);
 }else if($_POST["submit"]=="del_img"){
 
-$sql_update = "UPDATE opdcard SET img_profile='noImage.png' WHERE hn='".$_POST["hn"]."' ";
+$sql_update = "UPDATE opdcard SET img_profile='noimage.png' WHERE hn='".$_POST["hn"]."' ";
 $result_update= mysql_query($sql_update) or die(mysql_error());
 
 unlink("../images/img_opd/".$_POST["hn"].".png");
@@ -275,7 +280,7 @@ if($_POST["data"]){
 
   $sql = "SELECT img_profile from opdcard WHERE hn = '".$_POST["hn"]."'  ";
   list($img_profile) = Mysql_fetch_row(Mysql_Query($sql));
-  if($img_profile!="noImage.png"){
+  if($img_profile!="noimage.png"){
     $unlink="../images/img_opd/".$img_profile;
     unlink($unlink);  // ฟังก์ชั่นลบไฟล์ที่มี พาธ images/test.jpg
   }

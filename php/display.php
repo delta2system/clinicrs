@@ -6,7 +6,7 @@
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <meta http-equiv="refresh" content="0;url=../js/fullcalendar-1.9.4/demos/calendar.html">
+    <meta http-equiv="refresh" content="0;url=../js/fullcalendar-1.9.4/demos/calendar_desktop.html">
 </head>
 <body>
 <center>

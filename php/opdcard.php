@@ -65,7 +65,7 @@ if(empty($_COOKIE["sIdname"])){
     	 		success: function(html)
     	 		{
     	 			alert("บันทึกเรียบร้อย");
-    	 			window.location="opdcard_print.php?hn="+$("input[name=hn]").val();
+    	 			window.location="opdcard_print.php?hn="+html;
     	 		}
     	 		});
 
