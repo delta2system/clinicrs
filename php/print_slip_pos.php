@@ -24,7 +24,7 @@ function num_comma($str){
 	  <script src="../vendor/jquery/jquery.min.js"></script>
 	   <link href="../vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
 </head>
-<body onload="window.print()">
+<body >
 <div style="width:60mm;margin:0px auto;">
 <?
 		  $sql_head = "SELECT opdcard.firstname, opdcard.lastname, opd_order.hn  FROM opd_order INNER JOIN opdcard ON opd_order.hn=opdcard.hn  WHERE  opd_order.nobill = '".$_GET["nobill"]."'  limit 1 ";
@@ -86,7 +86,9 @@ function num_comma($str){
 </div>
 </body>
 </html>
+
 <script type="text/javascript">
+    window.print();
 function next_page(){
 	window.location='pos.php';
 }

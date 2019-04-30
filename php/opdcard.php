@@ -1,7 +1,7 @@
 <?PHP
 session_start();
 include("../data/connect.inc");
-if(empty($_COOKIE["sIdname"])){
+if(empty($_COOKIE["sIdname"]) && empty($_SESSION["sIdname"])){
 	echo("<script>alert('กรุณาลงชื่อเข้าใช้');window.top.window.login();</script>");
 }
 // if(empty($_GET["hn"])){
@@ -170,6 +170,54 @@ function del_opd(){
     	 		});
 	}
 }
+
+		function cancel_bill_ck(rd){
+			$('#row_id_del').val(rd);
+			$('#popup_admin').show();
+			$('#passadmin').val('');
+			$('#passadmin').focus();
+		}
+	
+
+	   	function cancel_bill(){
+	
+		$.ajax({
+    		type: "POST",
+    		url: "mysql_report.php",
+    		data: "submit=passadmin&pass="+$("#passadmin").val(),
+    		cache: false,
+    		success: function(html){
+    			if(html=="true"){
+    				var bi = $("#row_id_del").val();
+    				ajax_cancel(bi);
+
+    			}else if(html=="false"){
+    				alert("รหัสผ่านไม่ถูกต้อง");
+    				$('#popup_admin').hide();
+    			}
+    		}
+    		
+		});
+	}
+	function ajax_cancel(bi){
+
+		$.ajax({
+    		type: "POST",
+    		url: "mysql_report.php",
+    		data: "submit=cancel_billorder&row_id="+bi,
+    		cache: false,
+    		success: function(html){
+    			if(html=="true"){
+    				var opd = $('input[name=hn]').val();
+    				window.location='opdcard.php?hn='+opd;
+    			}else{
+    				alert(html);
+    			}
+    		}
+    		
+		});
+
+	}
 	 </script>
 	<style type="text/css">
 		input[type=text],input[type=date],select{
@@ -331,7 +379,7 @@ print "<tr style='border-bottom:1px solid #e2e2e2;'><td>".course_detail($data[co
 	  ."<td style='text-align: right;'>$data[price]&nbsp;&nbsp;</td>"
 	  ."<td style='text-align: center;'>".date_format(date_create($data[datedo]),"d/m/Y")."</td>"
 	  ."<td style='text-align: center;'>$data[timedo]</td>"
-	  ."<td>".worker($data[worker])."</td></tr>";
+	  ."<td>".worker($data[worker])."</td><td style='color:#ffffff;'><div style='width:20px;height:20px;font-size:9px;background-color:#cc0000;border-radius:3px;text-align:center;cursor:pointer;padding:5px;' onclick=\"cancel_bill_ck('$data[row_id]')\">X</div></td></tr>";
 }
 	?>
 </tbody>
@@ -340,6 +388,13 @@ print "<tr style='border-bottom:1px solid #e2e2e2;'><td>".course_detail($data[co
 <?}?>
 </body>
 </html>
+<div id='popup_admin' style="display:none;position: absolute;top:0px;left:0px;width:100%;height:100%;background-color: rgba(0,0,0,0.6);">
+<div style="margin:0px auto;width:250px;height:120px;border:1px solid #a0a0a0;background-color: #ffffff;border-radius: 5px;box-shadow: 5px 5px 5px rgba(0,0,0,0.4);margin-top: 20%;text-align: center;padding-top: 10px">
+	กรุณาใส่รหัสผ่าน admin <input type="password" id="passadmin" style="font-size: 16px;text-align: center;padding:3px;border-radius: 3px;border:1px solid #a0a0a0;" onkeyup="if(event.which==13){cancel_bill();}">
+	<input type="hidden" id="row_id_del">
+	<div style="margin:0px auto;width:100px;margin-top:10px;padding:5px 5px;border:1px solid #909090;background-color: #f0f0f0;border-radius: 5px;cursor: pointer;" onclick="$('#popup_admin').hide();">ยกเลิกบิล</div>
+</div>
+</div>
 <?
 if(isset($_GET["hn"])){
 	echo "<script>hn_detail('".$_GET["hn"]."');</script>";

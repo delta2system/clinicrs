@@ -1,7 +1,7 @@
 <?PHP
 session_start();
 include("../data/connect.inc");
-if(empty($_COOKIE["sIdname"])){
+if(empty($_COOKIE["sIdname"]) && empty($_SESSION["sIdname"])){
 	echo("<script>alert('กรุณาลงชื่อเข้าใช้');window.top.window.login();</script>");
 }
 

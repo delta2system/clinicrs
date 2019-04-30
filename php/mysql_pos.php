@@ -36,7 +36,7 @@ if($_POST["submit"]=="add_product"){
   
   }else if($_POST["submit"]=="return_product"){
   
-    $strSQL = "SELECT tools_product.unit,tools_product.detail,product_real.pcs,product_real.price FROM product_real inner join tools_product on product_real.id=tools_product.row_id WHERE product_real.status = '4' ";
+    $strSQL = "SELECT tools_product.unit,tools_product.detail,product_real.pcs,product_real.price,product_real.row_id FROM product_real inner join tools_product on product_real.id=tools_product.row_id WHERE product_real.status = '4' ";
     $objQuery = mysql_query($strSQL) or die (mysql_error());
     $intNumField = mysql_num_fields($objQuery);
     $resultArray = array();
@@ -55,7 +55,7 @@ if($_POST["submit"]=="add_product"){
   
   }else if($_POST["submit"]=="save_pos"){
 
-    $nobill=date("YmdHis");
+    //$nobill=date("YmdHis");
 
     $ds=explode("/",$_POST["dateday"]);
     if($_POST["hn"]){
@@ -64,7 +64,7 @@ if($_POST["submit"]=="add_product"){
         $hn="000000";
     }
     $discount=$_POST["discount"];
-
+    $nobill=($ds[2]-543).$ds[1].$ds[0].date("His");
 
     $sql = "SELECT * from product_real where status = '4'";
     $result = mysql_query($sql);
@@ -73,6 +73,7 @@ if($_POST["submit"]=="add_product"){
         $strSQL = "INSERT INTO opd_order SET "; 
         $strSQL .="hn = '".$hn."' ";
         $strSQL .=",nobill = '".$nobill."' ";
+        $strSQL .=",nobill_system = '".$nobill."' ";
         $strSQL .=",course_id = '".$row["id"]."' ";
         $strSQL .=",pcs = '".$row["pcs"]."' ";
         $strSQL .=",price = '".$row["price"]."' ";
@@ -94,5 +95,31 @@ if($_POST["submit"]=="add_product"){
       $sql_del = "DELETE FROM product_real WHERE  status = '4' "; 
       $query = mysql_query($sql_del);
       echo $nobill;
+    }else if($_POST["submit"]=="update_price_real"){
+
+        $sql_update = "UPDATE product_real SET price='".$_POST["price"]."' WHERE row_id = '".$_POST["row_id"]."' ";
+        $result_update= mysql_query($sql_update) or die(mysql_error());
+
+    }else if($_POST["submit"]=="return_update_price"){
+
+
+    $strSQL = "SELECT price,pcs FROM product_real  WHERE status = '4' ";
+    $objQuery = mysql_query($strSQL) or die (mysql_error());
+    $intNumField = mysql_num_fields($objQuery);
+    $resultArray = array();
+    while($obResult = mysql_fetch_array($objQuery))
+    {
+      $arrCol = array();
+      // for($i=0;$i<$intNumField;$i++)
+      // {
+      //   $arrCol[mysql_field_name($objQuery,$i)] = $obResult[$i];
+      // }
+      $arrCol["total"]=$obResult["price"]*$obResult["pcs"];
+      array_push($resultArray,$arrCol);
+    }
+    
+    echo json_encode($resultArray);
+
+
     }
 ?>

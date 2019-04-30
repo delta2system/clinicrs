@@ -1,7 +1,7 @@
 <?PHP
 session_start();
 include("../data/connect.inc");
-if(empty($_COOKIE["sIdname"])){
+if(empty($_COOKIE["sIdname"])&&empty($_SESSION["sIdname"])){
 	echo("<script>alert('กรุณาลงชื่อเข้าใช้');window.top.window.login();</script>");
 }
 
@@ -114,7 +114,7 @@ function del_pr(id){
 
 	var data = "&hn="+$("input[name=hn]").val();
 	    data = data + "&row_id="+id;
-
+     // alert(data);
     $.ajax({
       type: "POST",
       url: "mysql_pos.php",
@@ -147,8 +147,8 @@ function return_real(){
                     var total=0;
                     $.each(obj, function(key, val) {
              var data = "<div style='border-bottom:1px solid #e0e0e0;padding:10px;text-align:right;'>";
-			 	data = data + "<div style='padding:5px;width:70%;float:left;text-align:left;'>"+val["detail"]+"</div>";
-			 	data = data + "&nbsp;"+val["pcs"]+"&nbsp;"+val["unit"]+" x "+val["price"]+"&nbsp;&nbsp;&nbsp;";
+			 	data = data + "<div style='padding:5px;width:60%;float:left;text-align:left;'>"+val["detail"]+"</div>";
+			 	data = data + "&nbsp;"+val["pcs"]+"&nbsp;"+val["unit"]+" x <input type='text' value='"+val["price"]+"' style='width:60px;font-size:16px;' onkeyup=\"ch_price('"+val["row_id"]+"',this.value)\">&nbsp;&nbsp;&nbsp;";
 			 	data = data + "<button class='btn btn-danger' onclick=\"del_pr('"+val["row_id"]+"')\">-</button>";
 			 	data = data + "</div>";
                 $("#product_total").append(data);
@@ -161,10 +161,51 @@ function return_real(){
                      $("#total_cash").html(addCommas(total)+" ฿");
                      $("#total_org").val(total);                    
 
+                    }else{
+                     $("#total_cash").html("0.00฿");
+                     $("#total_org").val("0");  
                     }
            }
     });
 
+}
+
+function ch_price(rd,val){
+  //alert(rd);
+  //update_price_real
+    $.ajax({
+      type: "POST",
+      url: "mysql_pos.php",
+      data: 'submit=update_price_real&row_id='+rd+'&price='+val,
+      cache: false,
+      success: function(result){ update_price();}
+    });
+}
+
+function update_price(){
+      $.ajax({
+      type: "POST",
+      url: "mysql_pos.php",
+      data: 'submit=return_update_price',
+      cache: false,
+      success: function(result)
+        {
+         var obj = jQuery.parseJSON(result);
+                    if(obj != '')
+                    {
+                    var total=0;
+                    $.each(obj, function(key, val) {
+                var tx = parseFloat(val["total"]);   if ( isNaN(tx)){tx = 0;}
+                 total = total+tx;
+                });
+                    var dis = parseFloat($("#discount").val());   if ( isNaN(dis)){dis = 0;}
+                     total=(total-dis).toFixed(2);
+                     $("#total_cash").html(addCommas(total)+" ฿");
+                     $("#total_org").val(total);                    
+
+                    }
+           }
+    });
 }
 
 function course(vl){

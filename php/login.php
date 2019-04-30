@@ -1,6 +1,13 @@
 <?php
     session_start();
-    if($_GET["logout"]){session_destroy();}
+
+    if($_GET["logout"]){
+        session_destroy();
+        // setcookie("sIdname", "", time()-3600);
+        // setcookie("sPword", "", time()-3600);
+    }
+
+   
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -111,12 +118,13 @@ if($_POST["remember"] == "on") { // ถ้าติ๊กถูก Login ตล�
 setcookie("sIdname",$_POST["username"],time()+3600*24*356);
 setcookie("sPword",$_POST["password"],time()+3600*24*356);
 echo("<script>document.getElementById('success').style.display='';</script>");
-header("location:index.php"); //ไปไปตามหน้าที่คุณต้องการ
-
+//header("location:index.php"); //ไปไปตามหน้าที่คุณต้องการ
+echo("<script>window.location='index.php'</script>");
 } else {
 
 echo("<script>document.getElementById('success').style.display='';</script>");
-header("location:index.php"); //ไปไปตามหน้าที่คุณต้องการ
+//header("location:index.php"); //ไปไปตามหน้าที่คุณต้องการ
+echo("<script>window.location='index.php'</script>");
 }
 } else {
 echo("<script>document.getElementById('success').style.display='none';</script>");
@@ -124,4 +132,5 @@ echo("<script>document.getElementById('wrong').style.display='';</script>");
 //header("location: login.php"); //ไม่ถูกต้องให้กับไปหน้าเดิม
 }
 }
+//echo $_COOKIE["sIdname"];
 ?>

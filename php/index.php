@@ -10,6 +10,7 @@ session_start();
 //   //  header('Location: ../../../rs/php/index.php?');
 // }
 
+
 include("../data/connect.inc");
 
 if(empty($_SESSION["sIdname"])){
@@ -99,6 +100,11 @@ return $month;
     document.getElementById("menu-list").innerHTML = txt;
 }
 
+function login(){
+    window.location='login.php?logout=Y'
+}
+
+
 function check_cut(ax,bx){
 
  var person = prompt("กรุณาใส่วันที่", bx);
@@ -181,7 +187,11 @@ if (person != null) {
                         $sql = "SELECT * from menulst where status = 'Y' AND row_id IN (".substr($row_menu,1).") ORDER By menu_sort ASC";
                         $result = mysql_query($sql);
                         while ($menu = mysql_fetch_array($result) ) {
-                            print "<li><a href=\"$menu[script]\" target='iframe_target'> <img src='../images/icon/$menu[icon]' style='width:21px;height:21px;'>&nbsp;&nbsp; $menu[menu]</a></li>";
+                            $target=$menu[target];
+                            if(empty($target)){
+                                $target="iframe_target";
+                            }
+                            print "<li><a href=\"$menu[script]\" target='$target'> <img src='../images/icon/$menu[icon]' style='width:21px;height:21px;'>&nbsp;&nbsp; $menu[menu]</a></li>";
                         }
 
                         ?>
